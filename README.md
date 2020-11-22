@@ -1,7 +1,7 @@
 
 ## Available Scripts
 
-> #### default CRA scripts
+> ### default CRA scripts
 ```sh
     "start": "react-scripts start",
     "build": "react-scripts build",
