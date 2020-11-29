@@ -3,6 +3,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import Typography from "@material-ui/core/Typography";
 import axios from 'axios';
 import mime from 'mime-types';
+import {toast} from "react-toastify";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -23,8 +24,10 @@ export default function CSVFileImport({url, title}: CSVFileImportProps) {
     useEffect(() => {
         const login = 'maximsan';
         const password = 'TEST_PASSWORD';
+        const authorization_token = `Basic ${btoa(`${login}:${password}`)}`
         localStorage.setItem('login', login);
         localStorage.setItem('password', password);
+        localStorage.setItem('authorization_token', authorization_token);
     }, [])
 
     const onFileChange = (e: any) => {
@@ -42,8 +45,15 @@ export default function CSVFileImport({url, title}: CSVFileImportProps) {
             // Get the presigned URL
             const login = localStorage.getItem('login');
             const password = localStorage.getItem('password');
-            const data = `${login}:${password}`;
-            const encodedToken = `Basic ${btoa(data || "")}`;
+            const authorization_token = localStorage.getItem('authorization_token');
+
+            let encodedToken = '';
+            if (login && password) {
+                const data = `${login}:${password}`;
+                encodedToken = `Basic ${btoa(data || "")}`;
+            } else if (authorization_token) {
+                encodedToken = authorization_token;
+            }
 
             const response = await axios({
                 method: 'GET',
@@ -66,6 +76,8 @@ export default function CSVFileImport({url, title}: CSVFileImportProps) {
                     'Content-Type': mime.lookup(file.name) as string,
                 }
             })
+
+            toast.success('File successfully uploaded')
             console.log('Result: ', result)
             setFile('');
         }

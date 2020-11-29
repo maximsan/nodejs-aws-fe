@@ -6,35 +6,20 @@ import {store} from 'store/store';
 import {Provider} from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import axios from 'axios';
 import {Spinner} from './components/Spinner/Spinner';
-
-axios.interceptors.response.use(
-    (response) => {
-        return response;
-    },
-    function (error) {
-        if (error.response?.status) {
-            if (error.response.status === 400) {
-                console.error(error.response.data?.data);
-                console.error(error.response.data?.message);
-            } else if (error.response.status === 401) {
-                console.error('Unauthorized', error.response.data?.message);
-            } else if (error.response.status === 403) {
-                console.error('Access forbidden', error.response.data?.message);
-            }
-        }
-
-        return Promise.reject(error.response);
-    }
-);
+import {Alert} from 'components/Notification/Notification';
+import { Interceptor } from 'components/Interceptor';
 
 ReactDOM.render(
     <React.StrictMode>
         <Provider store={store}>
             <CssBaseline/>
             <Suspense fallback={<Spinner/>}>
-                <App/>
+                <>
+                    <Interceptor/>
+                    <Alert/>
+                    <App/>
+                </>
             </Suspense>
         </Provider>
     </React.StrictMode>,
