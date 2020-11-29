@@ -1,7 +1,7 @@
 
 ## Available Scripts
 
-> #### default CRA scripts
+> ### default CRA scripts
 ```sh
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -24,8 +24,8 @@
 ```
 
 * **[S3 bucket](http://spa-first-bucket.s3-website-eu-west-1.amazonaws.com/)**
-* **[Cloudfront](dhrqdbq3i157n.cloudfront.net)**
+* **[Cloudfront](https://dhrqdbq3i157n.cloudfront.net)**
 * **Automated configured S3 bucket/cloudfront resources**: 
     * [S3 bucket](http://spa-second-bucket.s3-website-eu-west-1.amazonaws.com/)
-    * [Cloudfront](dg2e8nno6k0ty.cloudfront.net)
+    * [Cloudfront](https://dg2e8nno6k0ty.cloudfront.net)
 
