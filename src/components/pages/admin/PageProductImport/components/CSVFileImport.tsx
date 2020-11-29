@@ -21,9 +21,9 @@ export default function CSVFileImport({url, title}: CSVFileImportProps) {
     const [file, setFile] = useState<any>();
 
     useEffect(() => {
-        const name = 'maximsan';
+        const login = 'maximsan';
         const password = 'TEST_PASSWORD';
-        localStorage.setItem('name', name);
+        localStorage.setItem('login', login);
         localStorage.setItem('password', password);
     }, [])
 
@@ -40,9 +40,9 @@ export default function CSVFileImport({url, title}: CSVFileImportProps) {
 
     const uploadFile = async (e: any) => {
             // Get the presigned URL
-            const name = localStorage.getItem('name');
+            const login = localStorage.getItem('login');
             const password = localStorage.getItem('password');
-            const data = `${name}:${password}`;
+            const data = `${login}:${password}`;
             const encodedToken = `Basic ${btoa(data || "")}`;
 
             const response = await axios({
