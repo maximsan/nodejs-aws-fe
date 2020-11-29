@@ -1,36 +1,44 @@
-import React, { Suspense } from 'react';
+import React, {Suspense} from 'react';
 import ReactDOM from 'react-dom';
 import 'index.css';
 import App from 'components/App/App';
-import { store } from 'store/store';
-import { Provider } from 'react-redux';
+import {store} from 'store/store';
+import {Provider} from 'react-redux';
 import * as serviceWorker from './serviceWorker';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import axios from 'axios';
-import { Spinner } from './components/Spinner/Spinner';
+import {Spinner} from './components/Spinner/Spinner';
 
 axios.interceptors.response.use(
-  (response) => {
-    return response;
-  },
-  function (error) {
-    if (error.response.status === 400) {
-      alert(error.response.data?.data);
+    (response) => {
+        return response;
+    },
+    function (error) {
+        if (error.response?.status) {
+            if (error.response.status === 400) {
+                console.error(error.response.data?.data);
+                console.error(error.response.data?.message);
+            } else if (error.response.status === 401) {
+                console.error('Unauthorized', error.response.data?.message);
+            } else if (error.response.status === 403) {
+                console.error('Access forbidden', error.response.data?.message);
+            }
+        }
+
+        return Promise.reject(error.response);
     }
-    return Promise.reject(error.response);
-  }
 );
 
 ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <CssBaseline />
-      <Suspense fallback={<Spinner />}>
-        <App />
-      </Suspense>
-    </Provider>
-  </React.StrictMode>,
-  document.getElementById('root')
+    <React.StrictMode>
+        <Provider store={store}>
+            <CssBaseline/>
+            <Suspense fallback={<Spinner/>}>
+                <App/>
+            </Suspense>
+        </Provider>
+    </React.StrictMode>,
+    document.getElementById('root')
 );
 
 // If you want your app to work offline and load faster, you can change
