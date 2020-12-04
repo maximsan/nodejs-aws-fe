@@ -1,8 +1,9 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Typography from "@material-ui/core/Typography";
 import axios from 'axios';
 import mime from 'mime-types';
+import {toast} from "react-toastify";
 
 const useStyles = makeStyles((theme) => ({
     content: {
@@ -20,6 +21,15 @@ export default function CSVFileImport({url, title}: CSVFileImportProps) {
     const classes = useStyles();
     const [file, setFile] = useState<any>();
 
+    useEffect(() => {
+        const login = 'maximsan';
+        const password = 'TEST_PASSWORD';
+        const authorization_token = `Basic ${btoa(`${login}:${password}`)}`
+        localStorage.setItem('login', login);
+        localStorage.setItem('password', password);
+        localStorage.setItem('authorization_token', authorization_token);
+    }, [])
+
     const onFileChange = (e: any) => {
         console.log(e);
         let files = e.target.files || e.dataTransfer.files
@@ -33,23 +43,41 @@ export default function CSVFileImport({url, title}: CSVFileImportProps) {
 
     const uploadFile = async (e: any) => {
             // Get the presigned URL
+            const login = localStorage.getItem('login');
+            const password = localStorage.getItem('password');
+            const authorization_token = localStorage.getItem('authorization_token');
+
+            let encodedToken = '';
+            if (login && password) {
+                const data = `${login}:${password}`;
+                encodedToken = `Basic ${btoa(data || "")}`;
+            } else if (authorization_token) {
+                encodedToken = authorization_token;
+            }
+
             const response = await axios({
                 method: 'GET',
                 url,
                 params: {
                     name: encodeURIComponent(file.name)
+                },
+                headers: {
+                    Authorization: encodedToken
                 }
             })
             console.log(`File: ${file}`);
             console.log(`File to upload: ${file.name}`)
             console.log(`Uploading to: ${response.data}`)
+
             const result = await fetch(response.data, {
                 method: 'PUT',
                 body: file,
                 headers: {
-                    'Content-Type': mime.lookup(file.name) as string
+                    'Content-Type': mime.lookup(file.name) as string,
                 }
             })
+
+            toast.success('File successfully uploaded')
             console.log('Result: ', result)
             setFile('');
         }
