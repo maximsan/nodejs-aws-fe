@@ -24,6 +24,7 @@ provider:
   name: aws
   runtime: nodejs12.x
   region: eu-west-1
+  profile: xalpinistx
 
 plugins:
   - serverless-finch
@@ -32,7 +33,7 @@ plugins:
 custom:
   ## Serverless-finch configuration
   client:
-    bucketName: spa-second-bucket
+    bucketName: spa-second-maximsan-bucket
     distributionFolder: build
     indexDocument: index.html
     manageResources: false
