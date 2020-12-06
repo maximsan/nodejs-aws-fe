@@ -77,7 +77,12 @@ export default function CSVFileImport({url, title}: CSVFileImportProps) {
                 }
             })
 
-            toast.success('File successfully uploaded')
+            if (result.ok) {
+                toast.success('File successfully uploaded')
+            } else {
+                toast.error(result.statusText);
+            }
+
             console.log('Result: ', result)
             setFile('');
         }
