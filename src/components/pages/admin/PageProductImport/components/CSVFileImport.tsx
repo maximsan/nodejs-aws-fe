@@ -24,7 +24,7 @@ export default function CSVFileImport({url, title}: CSVFileImportProps) {
     useEffect(() => {
         const login = 'maximsan';
         const password = 'TEST_PASSWORD';
-        const authorization_token = `Basic ${btoa(`${login}:${password}`)}`
+        const authorization_token = `${btoa(`${login}:${password}`)}`
         localStorage.setItem('login', login);
         localStorage.setItem('password', password);
         localStorage.setItem('authorization_token', authorization_token);
@@ -52,7 +52,7 @@ export default function CSVFileImport({url, title}: CSVFileImportProps) {
                 const data = `${login}:${password}`;
                 encodedToken = `Basic ${btoa(data || "")}`;
             } else if (authorization_token) {
-                encodedToken = authorization_token;
+                encodedToken = `Basic ${authorization_token}`;
             }
 
             const response = await axios({

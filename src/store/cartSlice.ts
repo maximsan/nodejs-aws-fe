@@ -1,7 +1,11 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {RootState} from 'store/store';
 import {Product} from "models/Product";
 import {CartItem} from "models/CartItem";
+import API_PATHS from "../constants/apiPaths";
+import axios from 'axios';
+
+const profileCartUrl = `${API_PATHS.cart}/profile/cart`;
 
 interface CartState {
   items: CartItem[]
@@ -15,6 +19,13 @@ export const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
+    updateFromApi: (state, { payload: { items } }: PayloadAction<CartState>) => {
+      return {
+        items: [
+            ...items,
+        ],
+      }
+    },
     // Use the PayloadAction type to declare the contents of `action.payload`
     addToCart: (state, action: PayloadAction<Product>) => {
       const {items} = state;
@@ -44,7 +55,36 @@ export const cartSlice = createSlice({
   },
 });
 
-export const {addToCart, removeFromCart, clearCart} = cartSlice.actions;
+export const addToCart = createAsyncThunk<void, Product, {state: RootState}>('cart/addToCart', async (product: Product, {dispatch, getState}) => {
+  dispatch(cartSlice.actions.addToCart(product));
+  const { cart: { items } } = getState();
+  console.log('addToCart',items)
+  await putProducts(items);
+})
+
+export const removeFromCart = createAsyncThunk<void, Product, {state: RootState}>('cart/removeFromCart', async(product: Product, {dispatch, getState}) => {
+  dispatch(cartSlice.actions.removeFromCart(product));
+  const { cart: { items } } = getState();
+  console.log('removeFromCart',items)
+  await putProducts(items);
+})
+
+export const clearCart = createAsyncThunk<void, void, {state: RootState}>('cart/removeFromCart', async( _, {dispatch, getState}) => {
+  dispatch(cartSlice.actions.clearCart());
+  const { cart: { items } } = getState();
+  console.log('clearCart', items)
+  await putProducts(items);
+})
+
+const putProducts = async (items: CartItem[]) => {
+  await axios.put(profileCartUrl, { items }, {
+    headers: {
+      Authorization: `Basic ${localStorage.getItem('authorization_token')}`,
+    },
+  })
+}
+
+export const {updateFromApi} = cartSlice.actions;
 
 
 // The function below is called a selector and allows us to select a value from
